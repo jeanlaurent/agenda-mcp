@@ -211,10 +211,16 @@ func initCalendarServiceFromEnv() (*CalendarService, error) {
 	}, nil
 }
 
-// Get today's events
-func (cs *CalendarService) getTodaysEvents() ([]CalendarEvent, error) {
-	now := time.Now()
-	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+// Get events for a specific day in YYYY-MM-DD format
+func (cs *CalendarService) getEventForDay(dateStr string) ([]CalendarEvent, error) {
+	// Parse the date string
+	targetDate, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		return nil, fmt.Errorf("invalid date format, expected YYYY-MM-DD: %v", err)
+	}
+
+	// Set start and end of the specified day
+	startOfDay := time.Date(targetDate.Year(), targetDate.Month(), targetDate.Day(), 0, 0, 0, 0, targetDate.Location())
 	endOfDay := startOfDay.Add(24 * time.Hour)
 
 	events, err := cs.service.Events.List("primary").ShowDeleted(false).
@@ -255,4 +261,11 @@ func (cs *CalendarService) getTodaysEvents() ([]CalendarEvent, error) {
 	}
 
 	return calendarEvents, nil
+}
+
+// Get today's events
+func (cs *CalendarService) getTodaysEvents() ([]CalendarEvent, error) {
+	now := time.Now()
+	todayStr := now.Format("2006-01-02")
+	return cs.getEventForDay(todayStr)
 }

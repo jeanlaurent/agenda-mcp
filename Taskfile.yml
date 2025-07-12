@@ -23,9 +23,9 @@ tasks:
       - go mod verify
 
   run-text:
-    desc: Test the agenda display
+    desc: Test the agenda display (today's agenda)
     deps: [build]
-    cmd: ./agenda-mcp test
+    cmd: ./agenda-mcp text
 
   run-mcp:
     desc: Start MCP server

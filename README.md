@@ -60,11 +60,22 @@ task build
 
 The program supports 2 modes:
 
-### Text Mode (Display Today's Agenda)
+### Text Mode (Display Calendar Agenda)
+
+Display today's agenda:
 
 ```bash
 task run-text
+# or directly: ./agenda-mcp text
 ```
+
+Display agenda for a specific date:
+
+```bash
+./agenda-mcp text 2024-12-25
+```
+
+The date must be in YYYY-MM-DD format. If no date is provided, today's agenda is displayed.
 
 ### MCP Server Mode
 
@@ -89,7 +100,7 @@ Run `task --list` to see all available tasks:
 - `task build` - Build the local binary
 - `task clean` - Clean build artifacts
 - `task mod-tidy` - Tidy and verify go modules
-- `task run-text` - Run it in the command line
+- `task run-text` - Show today's agenda in the command line
 - `task run-mcp` - Start MCP server
 - `task inspector` - Run the npx MCP inspector
 
@@ -112,8 +123,9 @@ If you prefer not to use Task, you can run the commands directly:
 go mod tidy
 
 # Run modes directly
-go run main.go text
-go run main.go mcp
+go run main.go text              # Show today's agenda
+go run main.go text 2024-12-25   # Show agenda for specific date
+go run main.go mcp               # Start MCP server
 ```
 
 ## Features
@@ -131,7 +143,12 @@ go run main.go mcp
 
 ## MCP Server Mode
 
-When run in MCP mode (`task run-mcp`), the program acts as a Model Context Protocol server that can be integrated with LLM applications like Claude, providing a `get_daily_agenda` tool.
+When run in MCP mode (`task run-mcp`), the program acts as a Model Context Protocol server that can be integrated with LLM applications like Claude, providing two calendar tools:
+
+### Available MCP Tools
+
+1. **`get_todays_agenda`** - Get today's calendar agenda from Google Calendar
+2. **`get_agenda_for_date`** - Get calendar agenda for a specific date (YYYY-MM-DD format)
 
 ### MCP Integration
 
@@ -148,7 +165,10 @@ Add this to your MCP client configuration:
 }
 ```
 
-This allows LLM applications to fetch your daily Google Calendar agenda using the `get_daily_agenda` tool.
+This allows LLM applications to:
+
+- Fetch your daily Google Calendar agenda using the `get_todays_agenda` tool
+- Get calendar events for any specific date using the `get_agenda_for_date` tool with a date parameter (e.g., "2024-12-25")
 
 ## File Structure
 
