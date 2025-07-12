@@ -158,25 +158,24 @@ Add this to your MCP client configuration:
 {
   "mcpServers": {
     "google-calendar": {
-      "command": "agenda-mcp",
-      "args": ["mcp"]
+      "command": "/path/to/your/agenda-mcp",
+      "args": ["mcp"],
+      "env": {
+        "client_id": "your-google-oauth-client-id",
+        "project_id": "your-google-project-id",
+        "client_secret": "your-google-oauth-client-secret"
+      }
     }
   }
 }
 ```
 
+**Note**: Replace `/path/to/your/agenda-mcp` with the actual full path to your built binary, and set the environment variables with your Google OAuth credentials from the `credentials.json` file.
+
 This allows LLM applications to:
 
 - Fetch your daily Google Calendar agenda using the `get_todays_agenda` tool
 - Get calendar events for any specific date using the `get_agenda_for_date` tool with a date parameter (e.g., "2024-12-25")
-
-## File Structure
-
-- `main.go` - Main program
-- `Taskfile.yml` - Task automation configuration
-- `credentials.json` - Google API credentials (you need to create this)
-- `token.json` - OAuth token (automatically created after first authorization)
-- `go.mod` - Go module dependencies
 
 ## Security Notes
 
