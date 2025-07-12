@@ -2,6 +2,24 @@
 
 A simple Go program that fetches and displays your daily agenda from Google Calendar.
 
+## Prerequisites
+
+This project uses [Task](https://taskfile.dev/) for task automation. Install it first:
+
+```bash
+# macOS
+brew install go-task/tap/go-task
+
+# Linux
+sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
+
+# Windows
+choco install go-task
+
+# Or install via Go
+go install github.com/go-task/task/v3/cmd/task@latest
+```
+
 ## Setup Instructions
 
 ### 1. Enable Google Calendar API
@@ -29,31 +47,37 @@ A simple Go program that fetches and displays your daily agenda from Google Cale
 ### 3. Install Dependencies
 
 ```bash
-go mod tidy
+task mod-tidy
 ```
 
-### 4. Run the Program
+### 4. Build the Application
+
+```bash
+task build
+```
+
+## Usage
 
 The program supports three modes:
 
-#### Authentication Mode
+### Authentication Mode
 
 Set up OAuth credentials (run this first):
 
 ```bash
-go run main.go auth
+task run-auth
 ```
 
-#### Test Mode (Display Today's Agenda)
+### Test Mode (Display Today's Agenda)
 
 ```bash
-go run main.go test
+task run-test
 ```
 
-#### MCP Server Mode
+### MCP Server Mode
 
 ```bash
-go run main.go mcp
+task run-mcp
 ```
 
 On first run (auth mode):
@@ -64,7 +88,43 @@ On first run (auth mode):
 4. The authorization will complete automatically - you'll see a success page
 5. Your credentials are saved for future runs
 
-After authentication, you can use `test` mode to display your agenda or `mcp` mode to run as an MCP server.
+After authentication, you can use `task run-test` to display your agenda or `task run-mcp` to run as an MCP server.
+
+## Available Tasks
+
+Run `task --list` to see all available tasks:
+
+- `task build` - Build the local binary
+- `task clean` - Clean build artifacts
+- `task mod-tidy` - Tidy and verify go modules
+- `task run-auth` - Run authentication flow
+- `task run-test` - Test the agenda display
+- `task run-mcp` - Start MCP server
+- `task inspector` - Run the npx MCP inspector
+
+### MCP Inspector
+
+For debugging and testing the MCP server, you can use the MCP inspector:
+
+```bash
+task inspector
+```
+
+This will start the MCP inspector at http://localhost:8080 for testing the MCP server functionality.
+
+## Alternative: Direct Go Commands
+
+If you prefer not to use Task, you can run the commands directly:
+
+```bash
+# Install dependencies
+go mod tidy
+
+# Run modes directly
+go run main.go auth
+go run main.go test
+go run main.go mcp
+```
 
 ## Features
 
@@ -81,7 +141,7 @@ After authentication, you can use `test` mode to display your agenda or `mcp` mo
 
 ## MCP Server Mode
 
-When run in MCP mode (`go run main.go mcp`), the program acts as a Model Context Protocol server that can be integrated with LLM applications like Claude, providing a `get_daily_agenda` tool.
+When run in MCP mode (`task run-mcp`), the program acts as a Model Context Protocol server that can be integrated with LLM applications like Claude, providing a `get_daily_agenda` tool.
 
 ### MCP Integration
 
@@ -103,6 +163,7 @@ This allows LLM applications to fetch your daily Google Calendar agenda using th
 ## File Structure
 
 - `main.go` - Main program
+- `Taskfile.yml` - Task automation configuration
 - `credentials.json` - Google API credentials (you need to create this)
 - `token.json` - OAuth token (automatically created after first authorization)
 - `go.mod` - Go module dependencies
