@@ -1,0 +1,17 @@
+# Credentials and tokens
+credentials.json
+token.json
+
+# Binaries
+agenda-mcp
+*.exe
+
+# Go build cache
+go.sum
+
+
+# OS files
+.DS_Store
+Thumbs.db 
+
+.task

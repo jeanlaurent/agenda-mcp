@@ -1,0 +1,42 @@
+version: "3"
+
+tasks:
+  build:
+    desc: Build the local binary
+    cmd: go build -o agenda-mcp .
+    sources:
+      - "*.go"
+      - "go.mod"
+      - "go.sum"
+    generates:
+      - "agenda-mcp"
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -f agenda-mcp
+
+  mod-tidy:
+    desc: Tidy and verify go modules
+    cmds:
+      - go mod tidy
+      - go mod verify
+
+  run-auth:
+    desc: Run authentication flow
+    deps: [build]
+    cmd: ./agenda-mcp auth
+
+  run-test:
+    desc: Test the agenda display
+    deps: [build]
+    cmd: ./agenda-mcp test
+
+  run-mcp:
+    desc: Start MCP server
+    deps: [build]
+    cmd: ./agenda-mcp mcp
+
+  inspector:
+    desc: Run the npx inspector
+    cmd: npx @modelcontextprotocol/inspector@latest --url http://localhost:8080

@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  agenda-mcp:
+    build: .
+    container_name: agenda-mcp
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount the current directory to /data for credentials and token files
+      - ./credentials.json:/data/credentials.json:ro
+      - ./token.json:/data/token.json
+    # Override default command if needed
+    # command: ["/agenda-mcp", "test"]
+    
+    # For authentication mode (run once to set up)
+    # command: ["/agenda-mcp", "auth"]
+    
+    # For MCP server mode (default)
+    command: ["/agenda-mcp", "mcp"]
+    
+    restart: unless-stopped 
