@@ -58,20 +58,12 @@ task build
 
 ## Usage
 
-The program supports three modes:
+The program supports 2 modes:
 
-### Authentication Mode
-
-Set up OAuth credentials (run this first):
+### Text Mode (Display Today's Agenda)
 
 ```bash
-task run-auth
-```
-
-### Test Mode (Display Today's Agenda)
-
-```bash
-task run-test
+task run-text
 ```
 
 ### MCP Server Mode
@@ -97,8 +89,7 @@ Run `task --list` to see all available tasks:
 - `task build` - Build the local binary
 - `task clean` - Clean build artifacts
 - `task mod-tidy` - Tidy and verify go modules
-- `task run-auth` - Run authentication flow
-- `task run-test` - Test the agenda display
+- `task run-text` - Run it in the command line
 - `task run-mcp` - Start MCP server
 - `task inspector` - Run the npx MCP inspector
 
@@ -121,8 +112,7 @@ If you prefer not to use Task, you can run the commands directly:
 go mod tidy
 
 # Run modes directly
-go run main.go auth
-go run main.go test
+go run main.go text
 go run main.go mcp
 ```
 

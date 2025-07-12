@@ -22,12 +22,7 @@ tasks:
       - go mod tidy
       - go mod verify
 
-  run-auth:
-    desc: Run authentication flow
-    deps: [build]
-    cmd: ./agenda-mcp auth
-
-  run-test:
+  run-text:
     desc: Test the agenda display
     deps: [build]
     cmd: ./agenda-mcp test
