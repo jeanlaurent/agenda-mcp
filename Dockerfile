@@ -1,16 +1,15 @@
 FROM golang:1.24-alpine AS gobuilder
-RUN  --mount=type=cache,target=/var/cache/apk apk add --no-cache git ca-certificates tzdata
 WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
-COPY main.go ./
-RUN go build -o agenda-mcp main.go
+RUN --mount=type=bind,target=. \
+    --mount=type=cache,target=/root/.cache \
+    --mount=type=cache,target=/go/pkg/mod \
+    go build -o /agenda-mcp .
 
-FROM scratch
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-COPY --from=builder /app/agenda-mcp /agenda-mcp
+FROM alpine:latest
+RUN apk add --no-cache ca-certificates tzdata
+COPY --from=gobuilder /agenda-mcp /
 EXPOSE 8080
 VOLUME ["/data"]
 WORKDIR /data
-CMD ["/agenda-mcp", "mcp"] 
+ENTRYPOINT ["/agenda-mcp"] 
+CMD ["mcp"] 
