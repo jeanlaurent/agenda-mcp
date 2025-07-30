@@ -119,14 +119,47 @@ func fetchCalendarColors(srv *calendar.Service) map[string]calendar.ColorDefinit
 }
 
 // Initialize calendar service with credentials file path (for auth and test modes)
-func initCalendarService(credentialsPath string) (*CalendarService, error) {
+func initCalendarService() (*CalendarService, error) {
 	ctx := context.Background()
-	b, err := os.ReadFile(credentialsPath)
-	if err != nil {
-		return nil, fmt.Errorf("unable to read client secret file: %v", err)
+
+	// Get required environment variables
+	clientID := os.Getenv("client_id")
+	projectID := os.Getenv("project_id")
+
+	// Validate required environment variables
+	if clientID == "" {
+		return nil, fmt.Errorf("client_id environment variable is required")
+	}
+	if projectID == "" {
+		return nil, fmt.Errorf("project_id environment variable is required")
 	}
 
-	config, err := google.ConfigFromJSON(b, calendar.CalendarReadonlyScope)
+	// client_secret is also required for OAuth
+	clientSecret := os.Getenv("client_secret")
+	if clientSecret == "" {
+		return nil, fmt.Errorf("client_secret environment variable is required")
+	}
+
+	// Create credentials JSON structure in memory
+	credentialsJSON := map[string]interface{}{
+		"installed": map[string]interface{}{
+			"client_id":                   clientID,
+			"project_id":                  projectID,
+			"auth_uri":                    "https://accounts.google.com/o/oauth2/auth",
+			"token_uri":                   "https://oauth2.googleapis.com/token",
+			"auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+			"client_secret":               clientSecret,
+			"redirect_uris":               []string{"http://localhost:8080"},
+		},
+	}
+
+	// Convert to JSON bytes
+	credentialsBytes, err := json.Marshal(credentialsJSON)
+	if err != nil {
+		return nil, fmt.Errorf("unable to marshal credentials JSON: %v", err)
+	}
+
+	config, err := google.ConfigFromJSON(credentialsBytes, calendar.CalendarReadonlyScope)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse client secret file to config: %v", err)
 	}

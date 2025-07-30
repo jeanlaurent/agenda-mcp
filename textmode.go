@@ -10,7 +10,7 @@ import (
 // Run test mode - show agenda for specified date or today
 func runTextMode(dateStr string) {
 	fmt.Println("🔐 Running authentication flow...")
-	cs, err := initCalendarService("credentials.json")
+	cs, err := initCalendarService()
 	if err != nil {
 		log.Fatalf("Authentication failed: %v", err)
 	}
