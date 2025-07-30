@@ -135,7 +135,6 @@ func saveToken(path string, token *oauth2.Token) {
 	json.NewEncoder(f).Encode(token)
 }
 
-// Retrieve a token from existing file, don't start OAuth flow
 func getClientFromExistingToken(config *oauth2.Config) (*http.Client, error) {
 	execPath, err := os.Executable()
 	if err != nil {
@@ -144,7 +143,7 @@ func getClientFromExistingToken(config *oauth2.Config) (*http.Client, error) {
 	tokenPath := filepath.Join(filepath.Dir(execPath), "token.json")
 	tok, err := tokenFromFile(tokenPath)
 	if err != nil {
-		return nil, fmt.Errorf("unable to load existing token from %s: %v. Please run 'agenda-mcp auth' first", tokenPath, err)
+		return nil, fmt.Errorf("unable to load existing token from %s: %v. Please run 'agenda-mcp text' first", tokenPath, err)
 	}
 	// Use the config passed as parameter to create the client with the loaded token
 	return config.Client(context.Background(), tok), nil
